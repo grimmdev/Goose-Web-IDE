@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production build output
+/dist/
+/build/
+/web-build/
+
+# Vite & Bundler cache
+.vite/
+
+# Environment files & secrets
+.env
+.env*.local
+*.pem
+credentials.json
+
+# Native & credentials (if any stray keys)
+*.jks
+*.keystore
+*.key
+*.p12
+*.apk
+*.aab
+
+# Logs & temp
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+bun.lockb.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript cache
+*.tsbuildinfo
