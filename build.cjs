@@ -37,12 +37,12 @@ async function build() {
 
   const appJsContent = result.outputFiles[0].text;
 
-  // Read WebAssembly module from @grimmdev/goose-wasm
-  console.log("Embedding Goose WASM compiler from @grimmdev/goose-wasm...");
-  let linterPath = path.resolve(rootDir, "node_modules/@grimmdev/goose-wasm/dist/goose_linter.js");
+  // Read WebAssembly compiler from @grimmdev/goose-wasm package
+  const linterPath = path.resolve(rootDir, "node_modules/@grimmdev/goose-wasm/dist/goose_linter.js");
   if (!fs.existsSync(linterPath)) {
-    linterPath = path.resolve(rootDir, "wasm/dist/goose_linter.js");
+    throw new Error(`Could not find goose_linter.js at ${linterPath}. Run bun install or npm install first.`);
   }
+  console.log(`Embedding Goose WASM compiler from: ${linterPath}`);
   const linterJs = fs.readFileSync(linterPath, "utf-8");
 
   const html = `<!doctype html>
