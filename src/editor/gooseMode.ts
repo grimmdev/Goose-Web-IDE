@@ -47,7 +47,7 @@ export const gooseLanguage = StreamLanguage.define({
         /^(print|println|min|max|clamp|sin|cos|tan|sqrt|abs|floor|ceil|pow|dot|cross|normalize|length|reflect|push|pop|len)\b/
       )
     ) {
-      return "variableName.special";
+      return "builtin";
     }
 
     // Identifiers & Function names

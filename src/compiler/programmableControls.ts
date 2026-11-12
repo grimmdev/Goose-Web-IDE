@@ -51,13 +51,13 @@ export function parseProgrammableControls(source: string): ParsedProgrammableCon
   let hasFlight = false;
 
   if (rawDirective.length > 0) {
-    // 1. Check for tap("...") or standalone tap
+    // Check for tap("...") or standalone tap
     const tapMatch = rawDirective.match(/\btap(?:\s*\(\s*["']([^"']+)["']\s*\))?/i);
     if (tapMatch) {
       tapButton = { label: tapMatch[1] || "Tap / Action" };
     }
 
-    // 2. Check for button("...") or btn("...")
+    // Check for button("...") or btn("...")
     const btnRegex = /\b(?:button|btn)\s*\(\s*["']([^"']+)["']\s*\)/gi;
     let bMatch: RegExpExecArray | null;
     let btnIdx = 0;
@@ -65,7 +65,7 @@ export function parseProgrammableControls(source: string): ParsedProgrammableCon
       buttons.push({ label: bMatch[1], index: btnIdx++ });
     }
 
-    // 3. Check for slider("Name", min, max, default)
+    // Check for slider("Name", min, max, default)
     const sliderRegex =
       /\bslider\s*\(\s*["']([^"']+)["'](?:\s*,\s*(-?[0-9.]+))?(?:\s*,\s*(-?[0-9.]+))?(?:\s*,\s*(-?[0-9.]+))?\s*\)/gi;
     let sMatch: RegExpExecArray | null;
@@ -79,12 +79,12 @@ export function parseProgrammableControls(source: string): ParsedProgrammableCon
       sliders.push({ label, min, max, defaultValue, index: sIdx++ });
     }
 
-    // 4. Check for dpad, joystick, directional
+    // Check for dpad, joystick, directional
     if (/\b(?:d-?pad|joystick|directional)\b/i.test(rawDirective)) {
       hasDpad = true;
     }
 
-    // 5. Check for flight or wasd
+    // Check for flight or wasd
     if (/\b(?:flight|wasd|fly)\b/i.test(rawDirective)) {
       hasFlight = true;
     }
@@ -101,7 +101,7 @@ export function parseProgrammableControls(source: string): ParsedProgrammableCon
 
   // Internal physics simulation triggers (mutually exclusive)
   const isTopDown = hasDpad && (source.includes("Tile") || source.includes("GAMEBOY_SHADER") || source.includes("Vector2"));
-  const isFlappy = !isTopDown && (source.includes("FLAPPY_SHADER") || (source.includes("Bird") && source.includes("u_pipe1")));
+  const isFlappy = false;
   const isRaymarch = source.includes("map_scene");
 
   if (isRaymarch && !hasFlight && rawDirective.length === 0) {

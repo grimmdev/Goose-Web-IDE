@@ -241,8 +241,7 @@ export function App() {
         const hasVisualScene =
           editor.source.includes("embed_shader") ||
           editor.source.includes("map_scene") ||
-          editor.source.includes("FLAPPY_SHADER") ||
-          editor.source.includes("GAMEBOY_SHADER") ||
+          editor.source.includes("voxel") ||
           editor.source.includes("RAYTRACER_SHADER");
 
         if (hasVisualScene) {
@@ -278,11 +277,10 @@ export function App() {
 
     const hasVisualScene =
       preset.category === "3D Engine" ||
-      preset.category === "2D Games" ||
+      preset.category === "Language" ||
       preset.code.includes("embed_shader") ||
       preset.code.includes("map_scene") ||
-      preset.code.includes("FLAPPY_SHADER") ||
-      preset.code.includes("GAMEBOY_SHADER") ||
+      preset.code.includes("voxel") ||
       preset.code.includes("RAYTRACER_SHADER");
 
     if (hasVisualScene) {
@@ -382,8 +380,7 @@ export function App() {
     const hasVisualScene =
       editor.source.includes("embed_shader") ||
       editor.source.includes("map_scene") ||
-      editor.source.includes("FLAPPY_SHADER") ||
-      editor.source.includes("GAMEBOY_SHADER") ||
+      editor.source.includes("voxel") ||
       editor.source.includes("RAYTRACER_SHADER");
 
     if (hasVisualScene) {

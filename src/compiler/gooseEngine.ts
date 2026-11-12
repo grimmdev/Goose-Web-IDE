@@ -61,9 +61,11 @@ export async function checkAndCompileGoose(source: string): Promise<CompileResul
   };
 
   try {
-    mod.FS.writeFile("/editor.goose", source);
+    // Strip any invalid or legacy git module imports from editor source
+    const cleanSource = source.replace(/^\s*import\s+git\s*;?\s*$/gm, "");
+    mod.FS.writeFile("/editor.goose", cleanSource);
 
-    // 1. Run check with JSON diagnostics
+    // Run check with JSON diagnostics
     let checkExit = 0;
     try {
       checkExit = mod.callMain([
@@ -84,7 +86,7 @@ export async function checkAndCompileGoose(source: string): Promise<CompileResul
       // JSON parse error
     }
 
-    // 2. Transpile to C
+    // Transpile to C
     let transpiledC = "";
     if (checkExit === 0) {
       try {
@@ -97,7 +99,7 @@ export async function checkAndCompileGoose(source: string): Promise<CompileResul
       }
     }
 
-    // 3. Generate AST Dump
+    // Generate AST Dump
     let astDump = "";
     stdout = "";
     try {
@@ -107,7 +109,7 @@ export async function checkAndCompileGoose(source: string): Promise<CompileResul
       astDump = "// AST dump unavailable";
     }
 
-    // 4. Run Execution for print outputs (e.g. Mandelbrot, CLI algorithms)
+    // Run execution for print outputs (e.g. Mandelbrot, CLI algorithms)
     let executionOutput = "";
     if (checkExit === 0) {
       const execRes = executeGoose(source);
@@ -131,4 +133,3 @@ export async function checkAndCompileGoose(source: string): Promise<CompileResul
     currentStderrHandler = null;
   }
 }
-

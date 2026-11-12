@@ -95,10 +95,10 @@ function extractAllFunctions(source: string): ParsedFn[] {
 function translateGooseBody(body: string, isMapScene: boolean = false): string {
   let res = body;
 
-  // 1. Strip comments
+  // Strip comments
   res = res.replace(/\/\/.*$/gm, "");
 
-  // 2. Resolve struct literals inside-out: float3 { ... }, float2 { ... }
+  // Resolve struct literals inside-out: float3 { ... }, float2 { ... }
   // We repeat until all nested instances are transformed to vec3 / vec2
   let changed = true;
   let iterations = 0;
@@ -117,14 +117,14 @@ function translateGooseBody(body: string, isMapScene: boolean = false): string {
     }
   }
 
-  // 3. Constants and types
+  // Constants and types
   res = res.replace(/\bfloat3_0\b/g, "vec3(0.0)");
   res = res.replace(/\bfloat2_0\b/g, "vec2(0.0)");
   res = res.replace(/\b0\.0\s*-\s*/g, "-");
   res = res.replace(/\b0\s*-\s*/g, "-");
   res = res.replace(/\bas\s+(?:f32|i64|u8|f64|i32|usize)\b/g, "");
 
-  // 4. Return translation
+  // Return translation
   if (isMapScene) {
     // map_scene returns (distance, materialId) -> GLSL vec2(d, mat)
     res = res.replace(/return\s+([^,;]+)\s*,\s*([^;]+);/g, "return vec2($1, float($2));");
@@ -132,10 +132,10 @@ function translateGooseBody(body: string, isMapScene: boolean = false): string {
     res = res.replace(/return\s+([^;,]+);/g, "return vec2($1, 0.0);");
   }
 
-  // 5. If condition parentheses: if cond { -> if (cond) {
+  // If condition parentheses: if cond { -> if (cond) {
   res = res.replace(/if\s+(?!\()([^{]+?)\s*\{/g, "if ($1) {");
 
-  // 6. Variable declarations: let / var
+  // Variable declarations: let / var
   res = res.replace(
     /(?:let|var)\s+([a-zA-Z0-9_]+)(?:\s*:\s*[a-zA-Z0-9_]+)?\s*=\s*([^;]+);/g,
     (_m, varName, rawExpr) => {
@@ -180,7 +180,7 @@ export function compileGooseToShader(
   separateShaderSource?: string
 ): ShaderCompilationResult {
   try {
-    // 1. Separate Shader File provided (e.g. shader.frag or pipeline.glsl in project)
+    // Separate Shader File provided (e.g. shader.frag or pipeline.glsl in project)
     if (separateShaderSource && separateShaderSource.trim().length > 0) {
       let frag = separateShaderSource.trim();
       if (!frag.includes("precision")) {
@@ -203,7 +203,7 @@ export function compileGooseToShader(
       }
     }
 
-    // 2. Embedded Fragment Shader in Goose source code (embed_shader("frag", ...))
+    // Embedded Fragment Shader in Goose source code (embed_shader("frag", ...))
     const embedMatch = source.match(/embed_shader\s*\(\s*["'](?:frag|fragment)["']\s*,\s*(?:[a-zA-Z0-9_]+\s*,\s*)?(?:"""([\s\S]*?)"""|"([^"]*)"|'([^']*)')\s*\)/);
     if (embedMatch) {
       const rawFs = (embedMatch[1] || embedMatch[2] || embedMatch[3] || "").trim();
@@ -244,7 +244,7 @@ export function compileGooseToShader(
       };
     }
 
-    // 3. Raw GLSL Fragment Shader directly in active editor
+    // Raw GLSL Fragment Shader directly in active editor
     if (
       source.includes("void main()") ||
       source.includes("void mainImage(") ||

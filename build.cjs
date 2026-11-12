@@ -27,7 +27,10 @@ async function build() {
     write: false,
     minify: true,
     target: ["es2020"],
-    loader: { ".css": "empty" },
+    loader: {
+      ".css": "empty",
+      ".goose": "text",
+    },
     format: "iife",
     jsx: "automatic",
     define: {
@@ -51,6 +54,7 @@ async function build() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Honk Web — Goose Language IDE</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪿</text></svg>" />
     <style>
 ${cssContent}
     </style>
