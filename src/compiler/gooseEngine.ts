@@ -1,5 +1,9 @@
 import { DiagnosticItem } from "@/store/slices/diagnosticsSlice";
 import { executeGoose } from "./gooseExecutor";
+import gfxPackageCode from "@/packages/gfx.goose";
+import audioPackageCode from "@/packages/audio.goose";
+import uiPackageCode from "@/packages/ui.goose";
+import physicsPackageCode from "@/packages/physics.goose";
 
 export interface CompileResult {
   success: boolean;
@@ -16,6 +20,42 @@ let linterInitPromise: Promise<any> | null = null;
 
 let currentStdoutHandler: ((text: string) => void) | null = null;
 let currentStderrHandler: ((text: string) => void) | null = null;
+
+function initVirtualPackages(mod: any) {
+  function mkdirp(p: string) {
+    const parts = p.split("/").filter(Boolean);
+    let cur = "";
+    for (const part of parts) {
+      cur += "/" + part;
+      try {
+        mod.FS.mkdir(cur);
+      } catch {}
+    }
+  }
+
+  // Pre-populate blessed packages in GOOSE_HOME cache to prevent compiler from invoking git
+  const gfxPkgDir = "/home/web_user/.goose/pkg/github.com/aardappel/goose_gfx/v1";
+  mkdirp(gfxPkgDir);
+  try {
+    mod.FS.writeFile(gfxPkgDir + "/gfx.goose", gfxPackageCode);
+    mod.FS.writeFile(gfxPkgDir + "/audio.goose", audioPackageCode);
+    mod.FS.writeFile(gfxPkgDir + "/ui.goose", uiPackageCode);
+  } catch {}
+
+  const physicsPkgDir = "/home/web_user/.goose/pkg/github.com/aardappel/goose_physics/v1";
+  mkdirp(physicsPkgDir);
+  try {
+    mod.FS.writeFile(physicsPkgDir + "/physics.goose", physicsPackageCode);
+  } catch {}
+
+  // Also pre-populate in /stdlib for direct lookups
+  try {
+    mod.FS.writeFile("/stdlib/gfx.goose", gfxPackageCode);
+    mod.FS.writeFile("/stdlib/audio.goose", audioPackageCode);
+    mod.FS.writeFile("/stdlib/ui.goose", uiPackageCode);
+    mod.FS.writeFile("/stdlib/physics.goose", physicsPackageCode);
+  } catch {}
+}
 
 export async function getLinterModule() {
   if (linterModule) return linterModule;
@@ -37,6 +77,7 @@ export async function getLinterModule() {
         },
       })
         .then((mod: any) => {
+          initVirtualPackages(mod);
           linterModule = mod;
           resolve(mod);
         })
